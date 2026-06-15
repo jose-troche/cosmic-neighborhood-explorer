@@ -8,12 +8,20 @@
     "packages/*"
   ],
   "scripts": {
+    "audit:cloudflare": "tsx scripts/audit-cloudflare-limits.ts",
     "build": "npm run build --workspaces",
+    "cloudflare:configure": "tsx scripts/configure-cloudflare.ts",
     "data:generate": "npm --workspace packages/data run generate",
+    "data:publish": "npm --workspace packages/data run publish",
+    "deploy": "npm run deploy:api && npm run deploy:web",
+    "deploy:api": "npm --workspace apps/api run deploy",
+    "deploy:web": "npm --workspace apps/web run deploy",
     "dev": "npm --workspace apps/web run dev",
     "dev:api": "npm --workspace apps/api run dev",
+    "smoke:live": "tsx scripts/live-smoke.ts",
     "test": "vitest run",
-    "typecheck": "npm run typecheck --workspaces"
+    "typecheck": "npm run typecheck:scripts && npm run typecheck --workspaces",
+    "typecheck:scripts": "tsc -p tsconfig.scripts.json --noEmit"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.0",

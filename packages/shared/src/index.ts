@@ -45,6 +45,35 @@ export const nearEarthObjectSchema = z.object({
   potentiallyHazardous: z.boolean()
 });
 
+export const deepSkyObjectSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.enum(["nebula", "cluster", "galaxy"]),
+  distanceLy: z.number().positive(),
+  raDeg: z.number(),
+  decDeg: z.number(),
+  xLy: z.number(),
+  yLy: z.number(),
+  zLy: z.number(),
+  apparentMagnitude: z.number().optional(),
+  constellation: z.string(),
+  summary: z.string(),
+  color: z.string()
+});
+
+export const worldProfileSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: z.enum(["planet", "moon", "exoplanet"]),
+  distanceLy: z.number().nonnegative(),
+  gravityEarth: z.number().nonnegative(),
+  dayLengthHours: z.number().positive(),
+  temperatureK: z.number().positive(),
+  atmosphericPressureEarth: z.number().nonnegative(),
+  radiusEarth: z.number().positive(),
+  highlight: z.string()
+});
+
 export const travelTargetSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -57,16 +86,46 @@ export const factSchema = z.object({
   title: z.string(),
   body: z.string(),
   metric: z.string(),
-  category: z.enum(["stars", "planets", "travel", "density", "motion"])
+  category: z.enum(["stars", "planets", "travel", "density", "motion", "objects", "hazards"])
+});
+
+export const sourceStatusSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  url: z.string(),
+  status: z.enum(["ok", "error", "seed"]),
+  fetchedAt: z.string().optional(),
+  recordCount: z.number().int().nonnegative().optional(),
+  message: z.string().optional()
+});
+
+export const discoveryTimelinePointSchema = z.object({
+  year: z.number().int(),
+  discovered: z.number().int().nonnegative(),
+  potentiallyHabitable: z.number().int().nonnegative()
+});
+
+export const densityCellSchema = z.object({
+  id: z.string(),
+  xLy: z.number(),
+  yLy: z.number(),
+  zLy: z.number(),
+  radiusLy: z.number().positive(),
+  starCount: z.number().int().nonnegative(),
+  planetCount: z.number().int().nonnegative(),
+  densityScore: z.number().nonnegative()
 });
 
 export const catalogSchema = z.object({
   version: z.string(),
   generatedAt: z.string(),
   sources: z.array(z.object({ name: z.string(), url: z.string(), notes: z.string() })),
+  sourceStatuses: z.array(sourceStatusSchema),
   stars: z.array(starSchema),
   exoplanets: z.array(exoplanetSchema),
   nearEarthObjects: z.array(nearEarthObjectSchema),
+  deepSkyObjects: z.array(deepSkyObjectSchema),
+  worldProfiles: z.array(worldProfileSchema),
   travelTargets: z.array(travelTargetSchema)
 });
 
@@ -76,13 +135,27 @@ export const factsSchema = z.object({
   facts: z.array(factSchema)
 });
 
+export const insightsSchema = z.object({
+  version: z.string(),
+  generatedAt: z.string(),
+  starOfTheDay: factSchema,
+  discoveryTimeline: z.array(discoveryTimelinePointSchema),
+  densityCells: z.array(densityCellSchema)
+});
+
 export type Catalog = z.infer<typeof catalogSchema>;
 export type CosmicFact = z.infer<typeof factSchema>;
+export type DeepSkyObject = z.infer<typeof deepSkyObjectSchema>;
+export type DensityCell = z.infer<typeof densityCellSchema>;
+export type DiscoveryTimelinePoint = z.infer<typeof discoveryTimelinePointSchema>;
 export type Exoplanet = z.infer<typeof exoplanetSchema>;
 export type FactsPayload = z.infer<typeof factsSchema>;
+export type InsightsPayload = z.infer<typeof insightsSchema>;
 export type NearEarthObject = z.infer<typeof nearEarthObjectSchema>;
+export type SourceStatus = z.infer<typeof sourceStatusSchema>;
 export type Star = z.infer<typeof starSchema>;
 export type TravelTarget = z.infer<typeof travelTargetSchema>;
+export type WorldProfile = z.infer<typeof worldProfileSchema>;
 
 export type SpeedPreset = {
   id: string;

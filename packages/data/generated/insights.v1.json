@@ -1,0 +1,245 @@
+{
+  "version": "v1",
+  "generatedAt": "2026-06-15T02:00:53.844Z",
+  "starOfTheDay": {
+    "id": "star-of-day",
+    "title": "Star of the Day",
+    "body": "Barnard's Star has the fastest apparent motion in the nearby-star snapshot at 10.36 arcseconds per year.",
+    "metric": "10.36 arcsec/yr",
+    "category": "motion"
+  },
+  "discoveryTimeline": [
+    {
+      "year": 1997,
+      "discovered": 1,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 1998,
+      "discovered": 2,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 1999,
+      "discovered": 1,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2000,
+      "discovered": 5,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2001,
+      "discovered": 3,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2002,
+      "discovered": 3,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2003,
+      "discovered": 4,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2004,
+      "discovered": 3,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2005,
+      "discovered": 5,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2006,
+      "discovered": 2,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2007,
+      "discovered": 4,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2008,
+      "discovered": 4,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2009,
+      "discovered": 10,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2010,
+      "discovered": 8,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2011,
+      "discovered": 7,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2012,
+      "discovered": 9,
+      "potentiallyHabitable": 1
+    },
+    {
+      "year": 2013,
+      "discovered": 9,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2014,
+      "discovered": 3,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2015,
+      "discovered": 10,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2016,
+      "discovered": 4,
+      "potentiallyHabitable": 1
+    },
+    {
+      "year": 2017,
+      "discovered": 10,
+      "potentiallyHabitable": 5
+    },
+    {
+      "year": 2018,
+      "discovered": 2,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2019,
+      "discovered": 12,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2020,
+      "discovered": 9,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2021,
+      "discovered": 9,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2022,
+      "discovered": 13,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2023,
+      "discovered": 12,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2024,
+      "discovered": 15,
+      "potentiallyHabitable": 0
+    },
+    {
+      "year": 2025,
+      "discovered": 16,
+      "potentiallyHabitable": 1
+    },
+    {
+      "year": 2026,
+      "discovered": 7,
+      "potentiallyHabitable": 1
+    }
+  ],
+  "densityCells": [
+    {
+      "id": "east-north-down",
+      "xLy": 10,
+      "yLy": 10,
+      "zLy": -10,
+      "radiusLy": 20,
+      "starCount": 96,
+      "planetCount": 44,
+      "densityScore": 9.88
+    },
+    {
+      "id": "west-north-up",
+      "xLy": -10,
+      "yLy": 10,
+      "zLy": 10,
+      "radiusLy": 20,
+      "starCount": 79,
+      "planetCount": 21,
+      "densityScore": 7.37
+    },
+    {
+      "id": "west-north-down",
+      "xLy": -10,
+      "yLy": 10,
+      "zLy": -10,
+      "radiusLy": 20,
+      "starCount": 75,
+      "planetCount": 24,
+      "densityScore": 7.2
+    },
+    {
+      "id": "west-south-up",
+      "xLy": -10,
+      "yLy": -10,
+      "zLy": 10,
+      "radiusLy": 20,
+      "starCount": 75,
+      "planetCount": 20,
+      "densityScore": 7
+    },
+    {
+      "id": "east-south-up",
+      "xLy": 10,
+      "yLy": -10,
+      "zLy": 10,
+      "radiusLy": 20,
+      "starCount": 72,
+      "planetCount": 23,
+      "densityScore": 6.91
+    },
+    {
+      "id": "east-north-up",
+      "xLy": 10,
+      "yLy": 10,
+      "zLy": 10,
+      "radiusLy": 20,
+      "starCount": 69,
+      "planetCount": 14,
+      "densityScore": 6.22
+    },
+    {
+      "id": "west-south-down",
+      "xLy": -10,
+      "yLy": -10,
+      "zLy": -10,
+      "radiusLy": 20,
+      "starCount": 63,
+      "planetCount": 15,
+      "densityScore": 5.79
+    },
+    {
+      "id": "east-south-down",
+      "xLy": 10,
+      "yLy": -10,
+      "zLy": -10,
+      "radiusLy": 20,
+      "starCount": 61,
+      "planetCount": 13,
+      "densityScore": 5.53
+    }
+  ]
+}

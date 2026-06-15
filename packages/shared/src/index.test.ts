@@ -15,14 +15,26 @@ describe("travel math", () => {
 });
 
 describe("catalog schema", () => {
-  it("accepts the MVP catalog shape", () => {
+  it("accepts the catalog shape", () => {
     const parsed = catalogSchema.safeParse({
       version: "v1",
       generatedAt: "2026-06-14T00:00:00.000Z",
       sources: [{ name: "Source", url: "https://example.com", notes: "fixture" }],
+      sourceStatuses: [
+        {
+          id: "fixture",
+          name: "Source",
+          url: "https://example.com",
+          status: "ok",
+          fetchedAt: "2026-06-14T00:00:00.000Z",
+          recordCount: 1
+        }
+      ],
       stars: [],
       exoplanets: [],
       nearEarthObjects: [],
+      deepSkyObjects: [],
+      worldProfiles: [],
       travelTargets: []
     });
 

@@ -1,1 +1,2 @@
-export { buildCatalog, deriveFacts } from "./pipeline";
+export { buildCatalog, deriveFacts, deriveInsights } from "./pipeline";
+export { mergeSourceSnapshot } from "./normalize";

@@ -1,15 +1,15 @@
 name = "cosmic-neighborhood-api"
 main = "src/index.ts"
 compatibility_date = "2026-06-14"
+account_id = "6c462d438728c32315ee320490ab5c31"
 
 [vars]
 BUILD_VERSION = "local"
-ADMIN_REFRESH_TOKEN = "dev-refresh-token"
 
 [[kv_namespaces]]
 binding = "COSMIC_CACHE"
-id = "replace-with-production-kv-namespace-id"
-preview_id = "replace-with-preview-kv-namespace-id"
+id = "b3b7afcbc9034ddfa76a6e330b8a0940"
+preview_id = "6ddcda737f9c490091f11d09dbb9241b"
 
 [triggers]
 crons = ["17 5 * * *"]

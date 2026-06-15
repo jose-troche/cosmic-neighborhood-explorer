@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "deploy": "wrangler pages deploy dist --project-name cosmic-neighborhood-explorer",
     "dev": "vite",
     "preview": "vite preview",
     "test": "vitest run src",

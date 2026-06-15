@@ -19,5 +19,10 @@ describe("App", () => {
 
     await waitFor(() => expect(screen.getByText("Cosmic Neighborhood Explorer")).toBeInTheDocument());
     expect(await screen.findByText(/stars, .* exoplanets/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Worlds/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Deep Sky/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Density/ })).toBeInTheDocument();
+    expect(screen.getByLabelText("3D map layers")).toBeInTheDocument();
+    expect(screen.getAllByText("Selected Star").length).toBeGreaterThan(0);
   });
 });

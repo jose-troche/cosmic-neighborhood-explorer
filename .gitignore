@@ -3,8 +3,14 @@ dist/
 .wrangler/
 .mf/
 .vite/
+.dev.vars
+.env
+.env.*
+!.env.example
+!.env.*.example
 coverage/
 playwright-report/
 test-results/
+packages/data/source-cache/
 *.log
 .DS_Store

@@ -8,7 +8,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "fetch:sources": "tsx src/sources.ts",
     "generate": "tsx src/generate.ts",
+    "publish": "tsx src/publish.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
