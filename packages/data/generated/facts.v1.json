@@ -1,0 +1,48 @@
+{
+  "version": "v1",
+  "generatedAt": "2026-06-14T23:56:16.567Z",
+  "facts": [
+    {
+      "id": "nearest-habitable",
+      "title": "Closest Habitable Candidate",
+      "body": "Proxima Centauri b is the closest potentially habitable planet in this snapshot at 4.2 light-years away.",
+      "metric": "4.2 ly",
+      "category": "planets"
+    },
+    {
+      "id": "planets-vs-stars-20ly",
+      "title": "Planets Within 20 Light-Years",
+      "body": "This MVP catalog includes 3 confirmed planets and 7 nearby stars within 20 light-years.",
+      "metric": "3:7",
+      "category": "density"
+    },
+    {
+      "id": "voyager-to-proxima",
+      "title": "Voyager-Scale Travel",
+      "body": "At Voyager 1 speed, reaching Proxima Centauri would take about 74,886 years.",
+      "metric": "74,886 years",
+      "category": "travel"
+    },
+    {
+      "id": "brightest-not-closest",
+      "title": "Brightness Is Not Closeness",
+      "body": "Sirius A is the brightest nearby star in this snapshot, while Proxima Centauri is the closest.",
+      "metric": "Sirius A",
+      "category": "stars"
+    },
+    {
+      "id": "red-dwarf-majority",
+      "title": "Red Dwarfs Dominate",
+      "body": "4 of 7 stars within 20 light-years are cool M-type red dwarfs.",
+      "metric": "57%",
+      "category": "stars"
+    },
+    {
+      "id": "star-of-day",
+      "title": "Star of the Day",
+      "body": "Barnard's Star has the fastest apparent motion in the nearby-star snapshot at 10.36 arcseconds per year.",
+      "metric": "10.36 arcsec/yr",
+      "category": "motion"
+    }
+  ]
+}

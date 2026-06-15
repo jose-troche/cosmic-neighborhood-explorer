@@ -1,0 +1,15 @@
+name = "cosmic-neighborhood-api"
+main = "src/index.ts"
+compatibility_date = "2026-06-14"
+
+[vars]
+BUILD_VERSION = "local"
+ADMIN_REFRESH_TOKEN = "dev-refresh-token"
+
+[[kv_namespaces]]
+binding = "COSMIC_CACHE"
+id = "replace-with-production-kv-namespace-id"
+preview_id = "replace-with-preview-kv-namespace-id"
+
+[triggers]
+crons = ["17 5 * * *"]
