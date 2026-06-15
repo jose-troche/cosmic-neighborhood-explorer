@@ -14,7 +14,7 @@ import {
   type Star
 } from "@cosmic/shared";
 import { loadCatalog, loadFacts, loadInsights } from "./api";
-import { StellarMap, type MapSelection, type MapVisibleLayers } from "./components/StellarMap";
+import { StellarMap, type MapSelection, type MapVisibleLayers, type StarColorMode } from "./components/StellarMap";
 import { TravelExplorer } from "./components/TravelExplorer";
 
 const HabitabilityChart = lazy(() =>
@@ -62,8 +62,10 @@ export function App() {
     nearEarthObjects: true,
     deepSkyObjects: true
   });
+  const [starColorMode, setStarColorMode] = useState<StarColorMode>("luminosity");
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
   const [selectedObject, setSelectedObject] = useState<MapSelection | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [speedId, setSpeedId] = useState(SPEED_PRESETS[3]?.id ?? "voyager-1");
   const [targetId, setTargetId] = useState("proxima-centauri");
 
@@ -97,6 +99,7 @@ export function App() {
             exoplanets={catalog.exoplanets}
             nearEarthObjects={catalog.nearEarthObjects}
             stars={catalog.stars}
+            starColorMode={starColorMode}
             visibleLayers={visibleLayers}
             selectedStarId={selectedStar?.id}
             onSelectObject={setSelectedObject}
@@ -110,11 +113,41 @@ export function App() {
       <aside className="control-panel" aria-label="Cosmic explorer controls">
         <header className="panel-header">
           <div>
-            <p className="eyebrow">Cloudflare Free Tier Explorer</p>
             <h1>Cosmic Neighborhood Explorer</h1>
           </div>
-          <Stars aria-hidden="true" />
+          <div className="header-actions">
+            <button
+              className="help-toggle"
+              type="button"
+              onClick={() => setHelpOpen(true)}
+              aria-expanded={helpOpen}
+              aria-controls="help-panel"
+            >
+              <Info size={16} />
+              <span>Help</span>
+            </button>
+            <Stars aria-hidden="true" />
+          </div>
         </header>
+
+        {helpOpen && (
+          <div className="help-overlay" role="dialog" aria-modal="true" aria-labelledby="help-panel-title">
+            <section id="help-panel" className="help-panel" aria-label="Quick use">
+              <div className="help-panel-header">
+                <h2 id="help-panel-title">Quick use</h2>
+                <button className="help-close" type="button" onClick={() => setHelpOpen(false)} aria-label="Close help">
+                  ×
+                </button>
+              </div>
+              <ul>
+                <li>Drag the star field to orbit, then scroll or pinch to zoom.</li>
+                <li>Select a star, planet marker, asteroid, or deep-sky object for details.</li>
+                <li>Use Star Color to compare luminosity, distance, temperature, or motion.</li>
+                <li>Switch tabs for facts, habitability, travel times, worlds, and hazards.</li>
+              </ul>
+            </section>
+          </div>
+        )}
 
         <nav className="tabs" aria-label="Explorer views">
           {tabs.map((tab) => {
@@ -143,7 +176,9 @@ export function App() {
               <MapLayerSummary
                 catalog={catalog}
                 selectedStar={selectedStar}
+                starColorMode={starColorMode}
                 visibleLayers={visibleLayers}
+                onStarColorModeChange={setStarColorMode}
                 onLayerToggle={(layer) => setVisibleLayers((current) => ({ ...current, [layer]: !current[layer] }))}
               />
             )}
@@ -359,12 +394,16 @@ function StarDetails({ star }: { star: Star }) {
 function MapLayerSummary({
   catalog,
   selectedStar,
+  starColorMode,
   visibleLayers,
+  onStarColorModeChange,
   onLayerToggle
 }: {
   catalog: Catalog;
   selectedStar: Star;
+  starColorMode: StarColorMode;
   visibleLayers: MapVisibleLayers;
+  onStarColorModeChange: (mode: StarColorMode) => void;
   onLayerToggle: (layer: keyof MapVisibleLayers) => void;
 }) {
   const hostedPlanets = catalog.exoplanets.filter((planet) => planet.hostStarId === selectedStar.id).slice(0, 5);
@@ -375,9 +414,35 @@ function MapLayerSummary({
     { id: "nearEarthObjects", label: "NEOs", swatch: "legend-neo", count: catalog.nearEarthObjects.length },
     { id: "deepSkyObjects", label: "Deep sky", swatch: "legend-deep", count: catalog.deepSkyObjects.length }
   ];
+  const colorModes: Array<{ id: StarColorMode; label: string; description: string }> = [
+    { id: "distance", label: "Distance", description: "Near green, mid blue, far amber" },
+    { id: "temperature", label: "Temperature", description: "Cool red, Sun-like cream, hot blue" },
+    { id: "luminosity", label: "Luminosity", description: "Dim blue, bright gold" },
+    { id: "motion", label: "Motion", description: "Slow slate, fast pink" }
+  ];
 
   return (
     <div className="map-layer-summary">
+      <article className="map-context star-color-controls">
+        <h3>Star Color</h3>
+        <div className={`star-color-ramp ${starColorMode}`} aria-hidden="true" />
+        <div className="color-mode-grid" aria-label="Star color meaning">
+          {colorModes.map((mode) => (
+            <button
+              className={starColorMode === mode.id ? "color-mode active" : "color-mode"}
+              key={mode.id}
+              onClick={() => onStarColorModeChange(mode.id)}
+              type="button"
+              aria-pressed={starColorMode === mode.id}
+              title={mode.description}
+            >
+              <span>{mode.label}</span>
+            </button>
+          ))}
+        </div>
+        <p className="muted">{colorModes.find((mode) => mode.id === starColorMode)?.description}</p>
+      </article>
+
       <div className="layer-legend" aria-label="3D map layers">
         {layerControls.map((layer) => (
           <button

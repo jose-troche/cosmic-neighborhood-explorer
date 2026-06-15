@@ -15,6 +15,11 @@ test("app loads with nonblank canvas and tabs", async ({ page }) => {
   await expect(exoplanetLayer).toHaveAttribute("aria-pressed", "false");
   await exoplanetLayer.click();
   await expect(exoplanetLayer).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByLabel("Star color meaning")).toBeVisible();
+  await page.getByRole("button", { name: "Luminosity" }).click();
+  await expect(page.getByRole("button", { name: "Luminosity" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Motion" }).click();
+  await expect(page.getByRole("button", { name: "Motion" })).toHaveAttribute("aria-pressed", "true");
 
   await page.getByRole("button", { name: /Facts/ }).click();
   await expect(page.getByText("Cosmic Facts")).toBeVisible();

@@ -1,8 +1,8 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, OrbitControls, Stars as StarField } from "@react-three/drei";
 import { useMemo, useRef } from "react";
-import type { InstancedMesh } from "three";
-import { Color, Object3D } from "three";
+import type { Group } from "three";
+import { Color } from "three";
 import type { DeepSkyObject, Exoplanet, NearEarthObject, Star } from "@cosmic/shared";
 
 type StellarMapProps = {
@@ -10,6 +10,7 @@ type StellarMapProps = {
   exoplanets?: Exoplanet[];
   nearEarthObjects?: NearEarthObject[];
   stars: Star[];
+  starColorMode?: StarColorMode;
   visibleLayers?: MapVisibleLayers;
   selectedStarId?: string;
   onSelectObject?: (selection: MapSelection) => void;
@@ -29,13 +30,14 @@ export type MapVisibleLayers = {
   deepSkyObjects: boolean;
 };
 
-const tempObject = new Object3D();
+export type StarColorMode = "temperature" | "distance" | "luminosity" | "motion";
 
 export function StellarMap({
   deepSkyObjects = [],
   exoplanets = [],
   nearEarthObjects = [],
   stars,
+  starColorMode = "luminosity",
   visibleLayers = { stars: true, exoplanets: true, nearEarthObjects: true, deepSkyObjects: true },
   selectedStarId,
   onSelectObject,
@@ -46,10 +48,17 @@ export function StellarMap({
   return (
     <Canvas camera={{ position: [0, 14, 32], fov: 52 }} dpr={[1, 2]} gl={{ antialias: true }}>
       <color attach="background" args={["#05070f"]} />
-      <ambientLight intensity={0.65} />
-      <pointLight position={[0, 0, 0]} intensity={3.2} color="#fff5ce" />
-      <StarField radius={90} depth={50} count={1600} factor={4} saturation={0.4} fade speed={0.35} />
-      {visibleLayers.stars && <StarInstances stars={stars} onSelectObject={onSelectObject} onSelectStar={onSelectStar} />}
+      <ambientLight intensity={0.38} />
+      <pointLight position={[0, 0, 0]} intensity={1.4} color="#fff5ce" />
+      <StarField radius={90} depth={50} count={420} factor={1.45} saturation={0} fade speed={0.16} />
+      {visibleLayers.stars && (
+        <StarMarkers
+          stars={stars}
+          starColorMode={starColorMode}
+          onSelectObject={onSelectObject}
+          onSelectStar={onSelectStar}
+        />
+      )}
       {visibleLayers.exoplanets && <ExoplanetMarkers exoplanets={exoplanets} stars={stars} onSelectObject={onSelectObject} />}
       {visibleLayers.nearEarthObjects && <NearEarthObjectMarkers objects={nearbyNeos} onSelectObject={onSelectObject} />}
       {visibleLayers.deepSkyObjects && <DeepSkyMarkers objects={deepSkyObjects} onSelectObject={onSelectObject} />}
@@ -194,48 +203,127 @@ function scaledDeepSkyPosition(object: DeepSkyObject): [number, number, number] 
   ];
 }
 
-function StarInstances({
+function StarMarkers({
   stars,
+  starColorMode,
   onSelectObject,
   onSelectStar
-}: Pick<StellarMapProps, "stars" | "onSelectObject" | "onSelectStar">) {
-  const ref = useRef<InstancedMesh>(null);
-  const colors = useMemo(() => stars.map((star) => new Color(star.color)), [stars]);
+}: Pick<StellarMapProps, "stars" | "starColorMode" | "onSelectObject" | "onSelectStar">) {
+  const colors = useMemo(() => buildStarColors(stars, starColorMode ?? "temperature"), [stars, starColorMode]);
+
+  return (
+    <>
+      {stars.map((star, index) => (
+        <StarMarker
+          color={colors[index] ?? new Color(star.color)}
+          index={index}
+          key={star.id}
+          star={star}
+          onSelectObject={onSelectObject}
+          onSelectStar={onSelectStar}
+        />
+      ))}
+    </>
+  );
+}
+
+function StarMarker({
+  color,
+  index,
+  star,
+  onSelectObject,
+  onSelectStar
+}: {
+  color: Color;
+  index: number;
+  star: Star;
+  onSelectObject?: (selection: MapSelection) => void;
+  onSelectStar: (star: Star) => void;
+}) {
+  const ref = useRef<Group>(null);
+  const scale = star.id === "sun" ? 0.62 : Math.max(0.24, Math.min(2.15, Math.cbrt(star.luminositySolar + 0.08) * 1.12));
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
 
-    const elapsed = clock.elapsedTime;
-    stars.forEach((star, index) => {
-      const motion = star.properMotionArcsecYr * 0.014;
-      const scale = Math.max(0.16, Math.min(1.55, Math.cbrt(star.luminositySolar + 0.04)));
-      tempObject.position.set(star.xLy + Math.sin(elapsed * 0.2 + index) * motion, star.zLy, star.yLy);
-      tempObject.scale.setScalar(star.id === "sun" ? 0.42 : scale);
-      tempObject.updateMatrix();
-      ref.current!.setMatrixAt(index, tempObject.matrix);
-    });
-    ref.current.instanceMatrix.needsUpdate = true;
+    const motion = star.properMotionArcsecYr * 0.014;
+    ref.current.position.set(star.xLy + Math.sin(clock.elapsedTime * 0.2 + index) * motion, star.zLy, star.yLy);
   });
 
   return (
-    <instancedMesh
+    <group
       ref={ref}
-      args={[undefined, undefined, stars.length]}
+      scale={scale}
+      position={[star.xLy, star.zLy, star.yLy]}
       onClick={(event) => {
         event.stopPropagation();
-        const star = typeof event.instanceId === "number" ? stars[event.instanceId] : undefined;
-        if (star) {
-          onSelectStar(star);
-          onSelectObject?.({ type: "star", item: star });
-        }
+        onSelectStar(star);
+        onSelectObject?.({ type: "star", item: star });
       }}
     >
-      <sphereGeometry args={[0.55, 24, 24]}>
-        <instancedBufferAttribute attach="attributes-color" args={[new Float32Array(colors.flatMap((color) => [color.r, color.g, color.b])), 3]} />
-      </sphereGeometry>
-      <meshStandardMaterial vertexColors emissive="#ffffff" emissiveIntensity={0.55} roughness={0.45} />
-    </instancedMesh>
+      <mesh>
+        <sphereGeometry args={[0.58, 20, 20]} />
+        <meshBasicMaterial color={color} toneMapped={false} />
+      </mesh>
+      <mesh scale={1.9}>
+        <sphereGeometry args={[0.58, 16, 16]} />
+        <meshBasicMaterial color={color} transparent opacity={0.16} toneMapped={false} />
+      </mesh>
+    </group>
   );
+}
+
+function buildStarColors(stars: Star[], mode: StarColorMode): Color[] {
+  const distances = stars.map((star) => star.distanceLy);
+  const luminosities = stars.map((star) => Math.log10(star.luminositySolar + 0.001));
+  const motions = stars.map((star) => star.properMotionArcsecYr);
+
+  return stars.map((star) => {
+    if (star.id === "sun") return new Color("#fff2a8");
+
+    if (mode === "distance") {
+      return gradientColor(normalize(star.distanceLy, distances), [
+        "#6fe2be",
+        "#7aa7ff",
+        "#c98cff",
+        "#ffb86b"
+      ]);
+    }
+
+    if (mode === "luminosity") {
+      return gradientColor(normalize(Math.log10(star.luminositySolar + 0.001), luminosities), [
+        "#4466ff",
+        "#73d7ff",
+        "#fff4d3",
+        "#ffb86b"
+      ]);
+    }
+
+    if (mode === "motion") {
+      return gradientColor(normalize(star.properMotionArcsecYr, motions), [
+        "#53657d",
+        "#7aa7ff",
+        "#6fe2be",
+        "#ff6ea8"
+      ]);
+    }
+
+    return new Color(star.color);
+  });
+}
+
+function normalize(value: number, values: number[]): number {
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  if (max <= min) return 0;
+  return Math.max(0, Math.min(1, (value - min) / (max - min)));
+}
+
+function gradientColor(value: number, stops: string[]): Color {
+  const scaled = Math.max(0, Math.min(1, value)) * (stops.length - 1);
+  const index = Math.min(stops.length - 2, Math.floor(scaled));
+  const local = scaled - index;
+  return new Color(stops[index]).lerp(new Color(stops[index + 1]), local);
 }
 
 function SelectionLabel({ stars, selectedStarId }: { stars: Star[]; selectedStarId?: string }) {
